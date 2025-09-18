@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>About Me</title>
+  <style>
+    body { 
+      margin: 0; 
+      font-family: Inter, Arial, sans-serif; 
+      background: #0b0b0b; 
+      color: #fff; 
+    }
+    canvas { position: fixed; inset: 0; z-index: 0; }
+
+    .card {
+      position: relative; z-index: 2; max-width: 360px; margin: 40px auto;
+      padding: 24px; border-radius: 16px; backdrop-filter: blur(8px);
+      background: rgba(0,0,0,0.4); text-align: center;
+    }
+    .hero { width: 140px; height: 140px; border-radius: 50%; overflow: hidden; margin: 0 auto 12px; }
+    .hero img { width: 100%; height: 100%; object-fit: cover; }
+    h1 { margin: 6px 0; }
+    p { margin: 0 0 12px; color: #bbb; }
+
+    .socials { display: flex; gap: 12px; justify-content: center; margin-top: 10px; }
+    .socials a { padding: 8px 14px; background: rgba(255,255,255,0.08); border-radius: 8px; text-decoration: none; color: #fff; font-size: 13px; }
+
+    .settings-btn {
+      position: fixed; top: 16px; right: 16px; z-index: 3;
+      cursor: pointer; padding: 8px; background: rgba(255,255,255,0.08); border-radius: 8px;
+    }
+    .settings-panel {
+      position: fixed; top: 60px; right: 16px; z-index: 3; width: 280px;
+      padding: 16px; background: rgba(0,0,0,0.85); border-radius: 12px;
+      display: none; font-size: 13px;
+    }
+    .settings-panel label { display: block; margin: 12px 0 6px; }
+    .range-wrap { display: grid; grid-template-columns: 1fr 60px; gap: 8px; align-items: center; }
+    .settings-panel input[type=number] { width: 100%; padding: 2px 4px; background: #111; border: 1px solid #333; color: #fff; border-radius: 6px; }
+  </style>
+</head>
+<body>
+  <canvas id="c"></canvas>
+
+  <div class="card">
+    <div class="hero">
+      <img id="profilePic" src="https://placehold.co/200x200" alt="profile"/>
+    </div>
+    <h1>Your Name</h1>
+    <p>Short bio about yourself.</p>
+    <div class="socials">
+      <a id="github" href="#">GitHub</a>
+      <a id="discord" href="#">Discord</a>
+    </div>
+  </div>
+
+  <div class="settings-btn" id="settingsBtn">⚙️</div>
+  <div class="settings-panel" id="settings">
+    <label>
+      Dots
+      <div class="range-wrap">
+        <input id="count" type="range" min="20" max="500" value="120">
+        <input id="countNum" type="number" min="20" max="500" value="120">
+      </div>
+    </label>
+
+    <label>
+      Speed
+      <div class="range-wrap">
+        <input id="speed" type="range" min="0.2" max="3" step="0.1" value="1">
+        <input id="speedNum" type="number" min="0.2" max="3" step="0.1" value="1">
+      </div>
+    </label>
+
+    <label>
+      Link distance
+      <div class="range-wrap">
+        <input id="distance" type="range" min="50" max="300" value="100">
+        <input id="distanceNum" type="number" min="50" max="300" value="100">
+      </div>
+    </label>
+
+    <label>Dot color <input id="dotColor" type="color" value="#ffffff"></label>
+    <label>Background <input id="bgColor" type="color" value="#0b0b0b"></label>
+    <label>Upload profile <input id="avatarUpload" type="file" accept="image/*"></label>
+  </div>
+
+  <script>
+  const canvas = document.getElementById("c"),
+        ctx = canvas.getContext("2d");
+  let W = canvas.width = innerWidth,
+      H = canvas.height = innerHeight;
+
+  window.onresize = () => {
+    W = canvas.width = innerWidth;
+    H = canvas.height = innerHeight;
+    initParticles();
+  };
+
+  const inputs = {
+    count: document.getElementById("count"),
+    countNum: document.getElementById("countNum"),
+    speed: document.getElementById("speed"),
+    speedNum: document.getElementById("speedNum"),
+    distance: document.getElementById("distance"),
+    distanceNum: document.getElementById("distanceNum"),
+    dotColor: document.getElementById("dotColor"),
+    bgColor: document.getElementById("bgColor"),
+    avatarUpload: document.getElementById("avatarUpload"),
+  };
+
+  document.getElementById("settingsBtn").onclick = () => {
+    const s = document.getElementById("settings");
+    s.style.display = s.style.display === "block" ? "none" : "block";
+  };
+
+  function Particle() {
+    this.x = Math.random() * W;
+    this.y = Math.random() * H;
+    this.vx = (Math.random() - 0.5) * 1.2;
+    this.vy = (Math.random() - 0.5) * 1.2;
+    this.size = 2;
+  }
+
+  let particles = [];
+  function initParticles() {
+    particles = [];
+    for (let i = 0; i < parseInt(inputs.count.value); i++) {
+      particles.push(new Particle());
+    }
+  }
+  initParticles();
+
+  function draw() {
+    ctx.fillStyle = inputs.bgColor.value;
+    ctx.fillRect(0, 0, W, H);
+
+    const maxDist = parseInt(inputs.distance.value),
+          speed = parseFloat(inputs.speed.value);
+
+    for (let i = 0; i < particles.length; i++) {
+      let p = particles[i];
+      p.x += p.vx * speed;
+      p.y += p.vy * speed;
+      if (p.x < 0 || p.x > W) p.vx *= -1;
+      if (p.y < 0 || p.y > H) p.vy *= -1;
+
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+      ctx.fillStyle = inputs.dotColor.value;
+      ctx.fill();
+
+      for (let j = i + 1; j < particles.length; j++) {
+        let q = particles[j],
+            dx = p.x - q.x,
+            dy = p.y - q.y,
+            d = Math.hypot(dx, dy);
+        if (d < maxDist) {
+          ctx.strokeStyle = inputs.dotColor.value;
+          ctx.globalAlpha = 1 - d / maxDist;
+          ctx.beginPath();
+          ctx.moveTo(p.x, p.y);
+          ctx.lineTo(q.x, q.y);
+          ctx.stroke();
+          ctx.globalAlpha = 1;
+        }
+      }
+    }
+  }
+  (function loop() {
+    draw();
+    requestAnimationFrame(loop);
+  })();
+
+  // Sync Range <-> Number Inputs
+  function bindRangeAndNumber(range, number, callback) {
+    range.oninput = () => { number.value = range.value; callback(); };
+    number.oninput = () => { range.value = number.value; callback(); };
+  }
+  bindRangeAndNumber(inputs.count, inputs.countNum, initParticles);
+  bindRangeAndNumber(inputs.speed, inputs.speedNum, ()=>{});
+  bindRangeAndNumber(inputs.distance, inputs.distanceNum, ()=>{});
+
+  inputs.avatarUpload.onchange = e => {
+    const f = e.target.files[0];
+    if (!f) return;
+    const r = new FileReader();
+    r.onload = ev => {
+      document.getElementById("profilePic").src = ev.target.result;
+    };
+    r.readAsDataURL(f);
+  };
+
+  document.getElementById("github").onclick = e => {
+    if (e.target.href.endsWith("#")) {
+      e.preventDefault();
+      let url = prompt("Enter GitHub URL");
+      if (url) e.target.href = url;
+    }
+  };
+  document.getElementById("discord").onclick = e => {
+    if (e.target.href.endsWith("#")) {
+      e.preventDefault();
+      let url = prompt("Enter Discord URL");
+      if (url) e.target.href = url;
+    }
+  };
+  </script>
+</body>
+</html>
