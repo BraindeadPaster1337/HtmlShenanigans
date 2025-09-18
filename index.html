@@ -55,7 +55,7 @@
     </div>
   </div>
 
-  <div class="settings-btn" id="settingsBtn">⚙️</div>
+  <button class="settings-btn" id="settingsBtn">⚙️</button>
   <div class="settings-panel" id="settings">
     <label>
       Dots
@@ -68,8 +68,8 @@
     <label>
       Speed
       <div class="range-wrap">
-        <input id="speed" type="range" min="0.2" max="3" step="0.1" value="1">
-        <input id="speedNum" type="number" min="0.2" max="3" step="0.1" value="1">
+        <input id="speed" type="range" min="0.2" max="100" step="0.1" value="1">
+        <input id="speedNum" type="number" min="0.2" max="100" step="0.1" value="1">
       </div>
     </label>
 
@@ -87,6 +87,22 @@
   </div>
 
   <script>
+  const openBtn = document.getElementById('settingsBtn');
+    const draggableWin = document.getElementById('settings');
+    
+    draggableWin.style.display = 'none';
+    
+    openBtn.addEventListener ('click', () => {
+        if (draggableWin.style.display === 'block') {
+            draggableWin.style.display = 'none';
+            return;
+        }
+        else {
+            draggableWin.style.display = 'block';
+        }
+    });
+    
+
   const canvas = document.getElementById("c"),
         ctx = canvas.getContext("2d");
   let W = canvas.width = innerWidth,
@@ -110,10 +126,7 @@
     avatarUpload: document.getElementById("avatarUpload"),
   };
 
-  document.getElementById("settingsBtn").onclick = () => {
-    const s = document.getElementById("settings");
-    s.style.display = s.style.display === "block" ? "none" : "block";
-  };
+
 
   function Particle() {
     this.x = Math.random() * W;
