@@ -5,105 +5,363 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>About Me</title>
   <style>
+    /* Base Styles */
+    :root {
+      --primary: #6366f1;
+      --primary-dark: #4f46e5;
+      --surface: #1a1a1a;
+      --surface-light: #2a2a2a;
+      --text-primary: #f8fafc;
+      --text-secondary: #94a3b8;
+      --border: #334155;
+      --success: #10b981;
+      --error: #ef4444;
+    }
+    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
     body { 
       margin: 0; 
-      font-family: Inter, Arial, sans-serif; 
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif; 
       background: #0b0b0b; 
-      color: #fff; 
+      color: var(--text-primary); 
       display: flex; 
       justify-content: center; 
       align-items: center; 
       height: 100vh; 
       overflow: hidden;
+      line-height: 1.5;
     }
+    
     canvas { 
       position: fixed; 
       inset: 0; 
       z-index: 0; 
     }
 
+    /* Card Styles */
     .card {
       position: relative; 
       z-index: 2; 
-      padding: 24px; 
-      border-radius: 16px; 
-      backdrop-filter: blur(8px);
-      background: rgba(0,0,0,0.4); 
+      padding: clamp(1.5rem, 4vw, 2.5rem); 
+      border-radius: 1.5rem; 
+      backdrop-filter: blur(16px);
+      background: rgba(26, 26, 26, 0.7); 
       text-align: center;
-      transition: width 0.3s ease, height 0.3s ease;
+      transition: all 0.3s ease;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      width: min(90vw, 500px);
+      max-width: 90vw;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
+    
     .hero { 
-      width: 140px; 
-      height: 140px; 
+      width: clamp(100px, 20vw, 140px); 
+      height: clamp(100px, 20vw, 140px); 
       border-radius: 50%; 
       overflow: hidden; 
-      margin: 0 auto 12px; 
+      margin: 0 auto 1.5rem; 
+      border: 3px solid rgba(255, 255, 255, 0.1);
+      transition: all 0.3s ease;
     }
+    
+    .hero:hover {
+      transform: scale(1.05);
+      border-color: var(--primary);
+    }
+    
     .hero img { 
       width: 100%; 
       height: 100%; 
       object-fit: cover; 
     }
-    h1 { margin: 6px 0; }
-    p { 
-      margin: 0 0 12px; 
-      color: #bbb; 
+    
+    h1 { 
+      margin: 0 0 0.5rem; 
+      font-size: clamp(1.5rem, 4vw, 2rem);
+      font-weight: 600;
+    }
+    
+    .bio { 
+      margin: 0 0 1.5rem; 
+      color: var(--text-secondary); 
+      font-size: clamp(0.9rem, 2vw, 1.1rem);
+      line-height: 1.6;
+      max-width: 90%;
     }
 
     .socials { 
       display: flex; 
-      gap: 12px; 
+      gap: 0.75rem; 
       justify-content: center; 
-      margin-top: 10px; 
+      margin-top: 1rem; 
+      width: 100%;
+      flex-wrap: wrap;
     }
+    
     .socials a { 
-      padding: 8px 14px; 
-      background: rgba(255,255,255,0.08); 
-      border-radius: 8px; 
+      padding: 0.75rem 1.25rem; 
+      background: rgba(255, 255, 255, 0.05); 
+      border-radius: 0.75rem; 
       text-decoration: none; 
-      color: #fff; 
-      font-size: 13px; 
+      color: var(--text-primary); 
+      font-size: 0.9rem; 
+      font-weight: 500;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      flex: 1;
+      min-width: 120px;
+      max-width: 160px;
+      justify-content: center;
+    }
+    
+    .socials a:hover {
+      background: rgba(255, 255, 255, 0.1);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+    
+    .socials a:active {
+      transform: translateY(0);
+    }
+    
+    .socials a svg {
+      width: 16px;
+      height: 16px;
     }
 
+    /* Settings Button */
     .settings-btn {
       position: fixed; 
-      top: 16px; 
-      right: 16px; 
+      top: 1.5rem; 
+      right: 1.5rem; 
       z-index: 3;
       cursor: pointer; 
-      padding: 8px; 
-      background: rgba(255,255,255,0.08); 
-      border-radius: 8px;
+      padding: 0.75rem; 
+      background: rgba(26, 26, 26, 0.7); 
+      border-radius: 0.75rem;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     }
+    
+    .settings-btn:hover {
+      background: rgba(40, 40, 40, 0.8);
+      transform: scale(1.05);
+    }
+    
+    .settings-btn:active {
+      transform: scale(0.95);
+    }
+    
+    .settings-btn svg {
+      width: 20px;
+      height: 20px;
+      fill: var(--text-primary);
+    }
+
+    /* Settings Panel */
     .settings-panel {
       position: fixed; 
-      top: 60px; 
-      right: 16px; 
+      top: 5rem; 
+      right: 1.5rem; 
       z-index: 3;
-      width: 280px;
-      padding: 16px; 
-      background: rgba(0,0,0,0.85); 
-      border-radius: 12px;
+      width: 320px;
+      max-width: 90vw;
+      padding: 1.5rem; 
+      background: rgba(26, 26, 26, 0.95); 
+      border-radius: 1rem;
       display: none; 
-      font-size: 13px;
+      font-size: 0.9rem;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(20px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      max-height: 80vh;
+      overflow-y: auto;
     }
+    
+    .settings-panel h2 {
+      margin: 0 0 1.25rem;
+      font-size: 1.25rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .settings-panel h2 svg {
+      width: 18px;
+      height: 18px;
+    }
+    
+    .settings-group {
+      margin-bottom: 1.5rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    
+    .settings-group:last-child {
+      margin-bottom: 0;
+      padding-bottom: 0;
+      border-bottom: none;
+    }
+    
+    .settings-group h3 {
+      margin: 0 0 0.75rem;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
     .settings-panel label { 
       display: block; 
-      margin: 12px 0 6px; 
+      margin: 0.75rem 0 0.5rem; 
+      font-weight: 500;
     }
+    
     .range-wrap { 
       display: grid; 
-      grid-template-columns: 1fr 60px; 
-      gap: 8px; 
+      grid-template-columns: 1fr 70px; 
+      gap: 0.75rem; 
       align-items: center; 
     }
+    
+    input[type="range"] {
+      width: 100%;
+      height: 6px;
+      border-radius: 3px;
+      background: rgba(255, 255, 255, 0.1);
+      outline: none;
+      -webkit-appearance: none;
+    }
+    
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--primary);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    
+    input[type="range"]::-webkit-slider-thumb:hover {
+      background: var(--primary-dark);
+      transform: scale(1.1);
+    }
+    
     .settings-panel input[type=number] { 
       width: 100%; 
-      padding: 2px 4px; 
-      background: #111; 
-      border: 1px solid #333; 
-      color: #fff; 
-      border-radius: 6px; 
+      padding: 0.5rem; 
+      background: rgba(255, 255, 255, 0.05); 
+      border: 1px solid rgba(255, 255, 255, 0.1); 
+      color: var(--text-primary); 
+      border-radius: 0.5rem; 
+      font-size: 0.9rem;
+      transition: all 0.2s ease;
+    }
+    
+    .settings-panel input[type=number]:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+    }
+    
+    .settings-panel input[type=color] {
+      width: 100%;
+      height: 40px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 0.5rem;
+      background: rgba(255, 255, 255, 0.05);
+      cursor: pointer;
+    }
+    
+    .settings-panel input[type=file] {
+      width: 100%;
+      padding: 0.5rem;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px dashed rgba(255, 255, 255, 0.1);
+      border-radius: 0.5rem;
+      color: var(--text-primary);
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    
+    .settings-panel input[type=file]:hover {
+      border-color: var(--primary);
+      background: rgba(99, 102, 241, 0.05);
+    }
+    
+    /* Scrollbar Styling */
+    .settings-panel::-webkit-scrollbar {
+      width: 6px;
+    }
+    
+    .settings-panel::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 3px;
+    }
+    
+    .settings-panel::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 3px;
+    }
+    
+    .settings-panel::-webkit-scrollbar-thumb:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+      .card {
+        padding: 1.5rem;
+        width: 90vw;
+      }
+      
+      .settings-panel {
+        right: 1rem;
+        left: 1rem;
+        width: auto;
+      }
+      
+      .settings-btn {
+        top: 1rem;
+        right: 1rem;
+      }
+      
+      .socials a {
+        min-width: 100px;
+        padding: 0.6rem 1rem;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .socials {
+        flex-direction: column;
+        align-items: center;
+      }
+      
+      .socials a {
+        max-width: 200px;
+        width: 100%;
+      }
     }
   </style>
 </head>
@@ -115,54 +373,86 @@
       <img id="profilePic" src="https://placehold.co/200x200" alt="profile"/>
     </div>
     <h1>Your Name</h1>
-    <p>Short bio about yourself.</p>
+    <p class="bio">Short bio about yourself. This is where you can describe who you are and what you do.</p>
     <div class="socials">
-      <a id="github" href="#">GitHub</a>
-      <a id="discord" href="#">Discord</a>
+      <a id="github" href="#">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+        </svg>
+        GitHub
+      </a>
+      <a id="discord" href="#">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <path d="M19.27 5.33C17.94 4.71 16.5 4.26 15 4a.09.09 0 0 0-.07.03c-.18.33-.39.76-.53 1.09a16.09 16.09 0 0 0-4.8 0c-.14-.34-.35-.76-.54-1.09c-.01-.02-.04-.03-.07-.03c-1.5.26-2.93.71-4.27 1.33c-.01 0-.02.01-.03.02c-2.72 4.07-3.47 8.03-3.1 11.95c0 .02.01.04.03.05c1.8 1.32 3.53 2.12 5.24 2.65c.03.01.06 0 .07-.02c.4-.55.76-1.13 1.07-1.74c.02-.04 0-.08-.04-.09c-.57-.22-1.11-.48-1.64-.78c-.04-.02-.04-.08-.01-.11c.11-.08.22-.17.33-.25c.02-.02.05-.02.07-.01c3.44 1.57 7.15 1.57 10.55 0c.02-.01.05-.01.07.01c.11.09.22.17.33.26c.04.03.04.09-.01.11c-.52.31-1.07.56-1.64.78c-.04.01-.05.06-.04.09c.32.61.68 1.19 1.07 1.74c.03.01.06.02.09.01c1.72-.53 3.45-1.33 5.25-2.65c.02-.01.03-.03.03-.05c.44-4.53-.73-8.46-3.1-11.95c-.01-.01-.02-.02-.04-.02zM8.52 14.91c-1.03 0-1.89-.95-1.89-2.12s.84-2.12 1.89-2.12c1.06 0 1.9.96 1.89 2.12c0 1.17-.84 2.12-1.89 2.12zm6.97 0c-1.03 0-1.89-.95-1.89-2.12s.84-2.12 1.89-2.12c1.06 0 1.9.96 1.89 2.12c0 1.17-.83 2.12-1.89 2.12z"/>
+        </svg>
+        Discord
+      </a>
     </div>
   </div>
 
-  <button class="settings-btn" id="settingsBtn">⚙️</button>
+  <button class="settings-btn" id="settingsBtn" aria-label="Settings">
+    <svg viewBox="0 0 24 24" fill="currentColor">
+      <path d="M12 15.5A3.5 3.5 0 0 1 8.5 12 3.5 3.5 0 0 1 12 8.5a3.5 3.5 0 0 1 3.5 3.5 3.5 3.5 0 0 1-3.5 3.5zm7.43-2.53c.04.32.07.64.07.97 0 .33-.03.66-.07.97l2.11 1.65c.19.15.24.42.12.64l-2 3.46c-.12.22-.39.3-.61.22l-2.49-1c-.52.39-1.08.73-1.69.98l-.38 2.65c-.03.24-.24.42-.49.42h-4c-.25 0-.46-.18-.49-.42l-.38-2.65c-.61-.25-1.17-.59-1.69-.98l-2.49 1c-.23.09-.49 0-.61-.22l-2-3.46c-.13-.22-.07-.49.12-.64l2.11-1.65c-.04-.31-.07-.64-.07-.97 0-.33.03-.66.07-.97l-2.11-1.65c-.19-.15-.24-.42-.12-.64l2-3.46c.12-.22.39-.3.61-.22l2.49 1c.52-.39 1.08-.73 1.69-.98l.38-2.65c.03-.24.24-.42.49-.42h4c.25 0 .46.18.49.42l.38 2.65c.61.25 1.17.59 1.69.98l2.49-1c.23-.09.49 0 .61.22l2 3.46c.12.22.07.49-.12.64l-2.11 1.65z"/>
+    </svg>
+  </button>
+  
   <div class="settings-panel" id="settings">
-    <label>
-      Dots
-      <div class="range-wrap">
-        <input id="count" type="range" min="20" max="500" value="120">
-        <input id="countNum" type="number" min="20" max="500" value="120">
-      </div>
-    </label>
-
-    <label>
-      Speed
-      <div class="range-wrap">
-        <input id="speed" type="range" min="0.2" max="100" step="0.1" value="1">
-        <input id="speedNum" type="number" min="0.2" max="100" step="0.1" value="1">
-      </div>
-    </label>
-
-    <label>
-      Link distance
-      <div class="range-wrap">
-        <input id="distance" type="range" min="50" max="300" value="100">
-        <input id="distanceNum" type="number" min="50" max="300" value="100">
-      </div>
-    </label>
-
-    <label>Dot color <input id="dotColor" type="color" value="#ffffff"></label>
-    <label>Background <input id="bgColor" type="color" value="#0b0b0b"></label>
-    <label>Upload profile <input id="avatarUpload" type="file" accept="image/*"></label>
+    <h2>
+      <svg viewBox="0 0 24 24" fill="currentColor">
+        <path d="M12 15.5A3.5 3.5 0 0 1 8.5 12 3.5 3.5 0 0 1 12 8.5a3.5 3.5 0 0 1 3.5 3.5 3.5 3.5 0 0 1-3.5 3.5zm7.43-2.53c.04.32.07.64.07.97 0 .33-.03.66-.07.97l2.11 1.65c.19.15.24.42.12.64l-2 3.46c-.12.22-.39.3-.61.22l-2.49-1c-.52.39-1.08.73-1.69.98l-.38 2.65c-.03.24-.24.42-.49.42h-4c-.25 0-.46-.18-.49-.42l-.38-2.65c-.61-.25-1.17-.59-1.69-.98l-2.49 1c-.23.09-.49 0-.61-.22l-2-3.46c-.13-.22-.07-.49.12-.64l2.11-1.65c-.04-.31-.07-.64-.07-.97 0-.33.03-.66.07-.97l-2.11-1.65c-.19-.15-.24-.42-.12-.64l2-3.46c.12-.22.39-.3.61-.22l2.49 1c.52-.39 1.08-.73 1.69-.98l.38-2.65c.03-.24.24-.42.49-.42h4c.25 0 .46.18.49.42l.38 2.65c.61.25 1.17.59 1.69.98l2.49-1c.23-.09.49 0 .61.22l2 3.46c.12.22.07.49-.12.64l-2.11 1.65z"/>
+      </svg>
+      Settings
+    </h2>
     
-    <label>
-      Card Size
-      <div class="range-wrap">
-        <input id="cardSize" type="range" min="200" max="600" value="400">
-        <input id="cardSizeNum" type="number" min="200" max="600" value="400">
-      </div>
-    </label>
+    <div class="settings-group">
+      <h3>Background</h3>
+      
+      <label>
+        Dots
+        <div class="range-wrap">
+          <input id="count" type="range" min="20" max="500" value="120">
+          <input id="countNum" type="number" min="20" max="500" value="120">
+        </div>
+      </label>
+
+      <label>
+        Speed
+        <div class="range-wrap">
+          <input id="speed" type="range" min="0.2" max="100" step="0.1" value="1">
+          <input id="speedNum" type="number" min="0.2" max="100" step="0.1" value="1">
+        </div>
+      </label>
+
+      <label>
+        Link distance
+        <div class="range-wrap">
+          <input id="distance" type="range" min="50" max="300" value="100">
+          <input id="distanceNum" type="number" min="50" max="300" value="100">
+        </div>
+      </label>
+
+      <label>Dot color <input id="dotColor" type="color" value="#ffffff"></label>
+      <label>Background <input id="bgColor" type="color" value="#0b0b0b"></label>
+    </div>
+    
+    <div class="settings-group">
+      <h3>Profile</h3>
+      
+      <label>Upload profile picture <input id="avatarUpload" type="file" accept="image/*"></label>
+      
+      <label>
+        Card Size
+        <div class="range-wrap">
+          <input id="cardSize" type="range" min="300" max="600" value="400">
+          <input id="cardSizeNum" type="number" min="300" max="600" value="400">
+        </div>
+      </label>
+    </div>
   </div>
 
   <script>
-  const openBtn = document.getElementById('settingsBtn');
+    // Settings Panel Toggle
+    const openBtn = document.getElementById('settingsBtn');
     const draggableWin = document.getElementById('settings');
     
     draggableWin.style.display = 'none';
@@ -170,141 +460,155 @@
     openBtn.addEventListener ('click', () => {
         if (draggableWin.style.display === 'block') {
             draggableWin.style.display = 'none';
-            return;
+            openBtn.style.background = 'rgba(26, 26, 26, 0.7)';
         }
         else {
             draggableWin.style.display = 'block';
+            openBtn.style.background = 'rgba(99, 102, 241, 0.2)';
         }
     });
     
+    // Close settings panel when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!draggableWin.contains(e.target) && !openBtn.contains(e.target) && draggableWin.style.display === 'block') {
+        draggableWin.style.display = 'none';
+        openBtn.style.background = 'rgba(26, 26, 26, 0.7)';
+      }
+    });
 
-  const canvas = document.getElementById("c"),
-        ctx = canvas.getContext("2d");
-  let W = canvas.width = innerWidth,
+    // Canvas Animation
+    const canvas = document.getElementById("c"),
+          ctx = canvas.getContext("2d");
+    let W = canvas.width = innerWidth,
+        H = canvas.height = innerHeight;
+
+    window.onresize = () => {
+      W = canvas.width = innerWidth;
       H = canvas.height = innerHeight;
+      initParticles();
+    };
 
-  window.onresize = () => {
-    W = canvas.width = innerWidth;
-    H = canvas.height = innerHeight;
-    initParticles();
-  };
+    const inputs = {
+      count: document.getElementById("count"),
+      countNum: document.getElementById("countNum"),
+      speed: document.getElementById("speed"),
+      speedNum: document.getElementById("speedNum"),
+      distance: document.getElementById("distance"),
+      distanceNum: document.getElementById("distanceNum"),
+      dotColor: document.getElementById("dotColor"),
+      bgColor: document.getElementById("bgColor"),
+      avatarUpload: document.getElementById("avatarUpload"),
+      cardSize: document.getElementById("cardSize"),
+      cardSizeNum: document.getElementById("cardSizeNum")
+    };
 
-  const inputs = {
-    count: document.getElementById("count"),
-    countNum: document.getElementById("countNum"),
-    speed: document.getElementById("speed"),
-    speedNum: document.getElementById("speedNum"),
-    distance: document.getElementById("distance"),
-    distanceNum: document.getElementById("distanceNum"),
-    dotColor: document.getElementById("dotColor"),
-    bgColor: document.getElementById("bgColor"),
-    avatarUpload: document.getElementById("avatarUpload"),
-    cardSize: document.getElementById("cardSize"),
-    cardSizeNum: document.getElementById("cardSizeNum")
-  };
-
-
-
-  function Particle() {
-    this.x = Math.random() * W;
-    this.y = Math.random() * H;
-    this.vx = (Math.random() - 0.5) * 1.2;
-    this.vy = (Math.random() - 0.5) * 1.2;
-    this.size = 2;
-  }
-
-  let particles = [];
-  function initParticles() {
-    particles = [];
-    for (let i = 0; i < parseInt(inputs.count.value); i++) {
-      particles.push(new Particle());
+    function Particle() {
+      this.x = Math.random() * W;
+      this.y = Math.random() * H;
+      this.vx = (Math.random() - 0.5) * 1.2;
+      this.vy = (Math.random() - 0.5) * 1.2;
+      this.size = 2;
     }
-  }
-  initParticles();
 
-  function draw() {
-    ctx.fillStyle = inputs.bgColor.value;
-    ctx.fillRect(0, 0, W, H);
+    let particles = [];
+    function initParticles() {
+      particles = [];
+      for (let i = 0; i < parseInt(inputs.count.value); i++) {
+        particles.push(new Particle());
+      }
+    }
+    initParticles();
 
-    const maxDist = parseInt(inputs.distance.value),
-          speed = parseFloat(inputs.speed.value);
+    function draw() {
+      ctx.fillStyle = inputs.bgColor.value;
+      ctx.fillRect(0, 0, W, H);
 
-    for (let i = 0; i < particles.length; i++) {
-      let p = particles[i];
-      p.x += p.vx * speed;
-      p.y += p.vy * speed;
-      if (p.x < 0 || p.x > W) p.vx *= -1;
-      if (p.y < 0 || p.y > H) p.vy *= -1;
+      const maxDist = parseInt(inputs.distance.value),
+            speed = parseFloat(inputs.speed.value);
 
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-      ctx.fillStyle = inputs.dotColor.value;
-      ctx.fill();
+      for (let i = 0; i < particles.length; i++) {
+        let p = particles[i];
+        p.x += p.vx * speed;
+        p.y += p.vy * speed;
+        if (p.x < 0 || p.x > W) p.vx *= -1;
+        if (p.y < 0 || p.y > H) p.vy *= -1;
 
-      for (let j = i + 1; j < particles.length; j++) {
-        let q = particles[j],
-            dx = p.x - q.x,
-            dy = p.y - q.y,
-            d = Math.hypot(dx, dy);
-        if (d < maxDist) {
-          ctx.strokeStyle = inputs.dotColor.value;
-          ctx.globalAlpha = 1 - d / maxDist;
-          ctx.beginPath();
-          ctx.moveTo(p.x, p.y);
-          ctx.lineTo(q.x, q.y);
-          ctx.stroke();
-          ctx.globalAlpha = 1;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fillStyle = inputs.dotColor.value;
+        ctx.fill();
+
+        for (let j = i + 1; j < particles.length; j++) {
+          let q = particles[j],
+              dx = p.x - q.x,
+              dy = p.y - q.y,
+              d = Math.hypot(dx, dy);
+          if (d < maxDist) {
+            ctx.strokeStyle = inputs.dotColor.value;
+            ctx.globalAlpha = 1 - d / maxDist;
+            ctx.beginPath();
+            ctx.moveTo(p.x, p.y);
+            ctx.lineTo(q.x, q.y);
+            ctx.stroke();
+            ctx.globalAlpha = 1;
+          }
         }
       }
     }
-  }
-  (function loop() {
-    draw();
-    requestAnimationFrame(loop);
-  })();
+    (function loop() {
+      draw();
+      requestAnimationFrame(loop);
+    })();
 
-  // Sync Range <-> Number Inputs
-  function bindRangeAndNumber(range, number, callback) {
-    range.oninput = () => { number.value = range.value; callback(); };
-    number.oninput = () => { range.value = number.value; callback(); };
-  }
-  bindRangeAndNumber(inputs.count, inputs.countNum, initParticles);
-  bindRangeAndNumber(inputs.speed, inputs.speedNum, ()=>{});
-  bindRangeAndNumber(inputs.distance, inputs.distanceNum, ()=>{});
+    // Sync Range <-> Number Inputs
+    function bindRangeAndNumber(range, number, callback) {
+      range.oninput = () => { number.value = range.value; callback(); };
+      number.oninput = () => { range.value = number.value; callback(); };
+    }
+    bindRangeAndNumber(inputs.count, inputs.countNum, initParticles);
+    bindRangeAndNumber(inputs.speed, inputs.speedNum, ()=>{});
+    bindRangeAndNumber(inputs.distance, inputs.distanceNum, ()=>{});
 
-  // Sync Card Size <-> Number Inputs
-  bindRangeAndNumber(inputs.cardSize, inputs.cardSizeNum, () => {
-    const card = document.getElementById("aboutMeCard");
-    card.style.width = `${inputs.cardSize.value}px`;
-    card.style.height = `${inputs.cardSize.value * 1.5}px`;
-  });
+    // Sync Card Size <-> Number Inputs
+    bindRangeAndNumber(inputs.cardSize, inputs.cardSizeNum, () => {
+      const card = document.getElementById("aboutMeCard");
+      const size = parseInt(inputs.cardSize.value);
+      // Use clamp values to ensure the card doesn't get too small or too large
+      card.style.width = `min(90vw, ${size}px)`;
+    });
 
-  inputs.avatarUpload.onchange = e => {
-    const f = e.target.files[0];
-    if (!f) return;
-    const r = new FileReader();
-    r.onload = ev => {
-      document.getElementById("profilePic").src = ev.target.result;
+    inputs.avatarUpload.onchange = e => {
+      const f = e.target.files[0];
+      if (!f) return;
+      const r = new FileReader();
+      r.onload = ev => {
+        document.getElementById("profilePic").src = ev.target.result;
+      };
+      r.readAsDataURL(f);
     };
-    r.readAsDataURL(f);
-  };
 
-  // Handle GitHub and Discord links
-  document.getElementById("github").onclick = e => {
-    if (e.target.href.endsWith("#")) {
-      e.preventDefault();
-      let url = prompt("Enter GitHub URL");
-      if (url && url.trim() !== "") e.target.href = url;
-    }
-  };
-  document.getElementById("discord").onclick = e => {
-    if (e.target.href.endsWith("#")) {
-      e.preventDefault();
-      let url = prompt("Enter Discord URL");
-      if (url && url.trim() !== "") e.target.href = url;
-    }
-  };
-
+    // Handle GitHub and Discord links
+    document.getElementById("github").onclick = e => {
+      if (e.target.href.endsWith("#") || e.target.parentElement.href.endsWith("#")) {
+        e.preventDefault();
+        let url = prompt("Enter GitHub URL");
+        if (url && url.trim() !== "") {
+          const link = e.target.tagName === 'A' ? e.target : e.target.parentElement;
+          link.href = url;
+        }
+      }
+    };
+    
+    document.getElementById("discord").onclick = e => {
+      if (e.target.href.endsWith("#") || e.target.parentElement.href.endsWith("#")) {
+        e.preventDefault();
+        let url = prompt("Enter Discord URL");
+        if (url && url.trim() !== "") {
+          const link = e.target.tagName === 'A' ? e.target : e.target.parentElement;
+          link.href = url;
+        }
+      }
+    };
   </script>
 </body>
 </html>
